@@ -8,15 +8,23 @@ Simple VSCode extension to format individual files on save with the 'prettier' c
 
 ## Requirements
 
-For best performance you should have prettier and node.js installed locally. You can check by running "prettier" in cmd on windows or terminal on mac. If prettier is not installed it will still work via npx.
+- node.js is required
+- vsce is required
+
+`npm install -g @vscode/vsce`
+
+- prettier is optional but recommended
+
+`npm install -g prettier@latest`
+
+You can check by running "prettier" in cmd on windows or terminal on mac. If prettier is not installed this extension will still work via npx.
 
 ## Installation
 
 1. Run `cd /path/to/vscode-prettier-on-save`
-2. Run `npm install -g @vscode/vsce`
-3. Run `vsce package`
-4. In VSCode, Extensions -> ... -> Install from VSIX...
-5. Select generated .vsix file
+2. Run `vsce package`
+3. In VSCode, Extensions -> ... -> Install from VSIX...
+4. Select generated .vsix file
 
 ## Extension Settings
 

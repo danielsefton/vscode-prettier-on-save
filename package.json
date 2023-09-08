@@ -3,6 +3,10 @@
   "displayName": "Prettier on Save",
   "description": "Runs prettier on save",
   "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danielsefton/vscode-prettier-on-save.git"
+  },
   "engines": {
     "vscode": "^1.82.0"
   },
