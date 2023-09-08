@@ -1,26 +1,50 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
+import * as cp from "child_process";
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+let disposable: vscode.Disposable | undefined;
+
 export function activate(context: vscode.ExtensionContext) {
+  console.log("Prettier on Save is active.");
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "prettier-on-save" is now active!');
+  disposable = vscode.workspace.onDidSaveTextDocument((document) => {
+    const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri);
+    if (workspaceFolder) {
+      let command: string;
+      let args: string[];
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('prettier-on-save.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from Prettier on Save!');
-	});
+      // Determine the command and arguments based on the platform
+      if (process.platform === "win32") {
+        // On Windows, use cmd.exe to run npx
+        command = "cmd";
+        args = ["/c", "npx", "prettier@latest", "--write", document.uri.fsPath];
+      } else {
+        // On macOS and Linux, directly use npx
+        command = "npx";
+        args = ["prettier@latest", "--write", document.uri.fsPath];
+      }
 
-	context.subscriptions.push(disposable);
+      cp.execFile(
+        command,
+        args,
+        { cwd: workspaceFolder.uri.fsPath },
+        (error, stdout, stderr) => {
+          if (error) {
+            vscode.window.showErrorMessage(
+              `Error running Prettier: ${error.message}`,
+            );
+          } else {
+            vscode.window.showInformationMessage("Prettier ran successfully!");
+          }
+        },
+      );
+    }
+  });
+
+  context.subscriptions.push(disposable);
 }
 
-// This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() {
+  if (disposable) {
+    disposable.dispose();
+  }
+}
